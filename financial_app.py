@@ -9,7 +9,6 @@ import plotly.express as px
 import plotly.tools as tls
 from plotly.offline import iplot
 
-import pandas as pd
 
 # URLs pour les indices boursiers
 url_sp500 = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"  # USA
