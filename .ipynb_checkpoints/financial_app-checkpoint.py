@@ -4,12 +4,9 @@ from pandas_datareader.data import DataReader
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from datetime import datetime, date
+from datetime import date
 import plotly.express as px
 import plotly.tools as tls
-from plotly.offline import iplot
-
-import pandas as pd
 
 # URLs pour les indices boursiers
 url_sp500 = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"  # USA
@@ -22,95 +19,42 @@ url_dax = "https://en.wikipedia.org/wiki/DAX"  # Berlin
 def read_table(url, index):
     try:
         df = pd.read_html(url)[index]
-        print(f"Colonnes dans la table de {url} : {df.columns.tolist()}")  # Inspecter les colonnes
+        st.success(f"Table lue avec succès depuis {url}.")
         return df
     except Exception as e:
-        print(f"Erreur lors de la lecture de la table à partir de {url} : {e}")
+        st.error(f"Erreur lors de la lecture de la table à partir de {url} : {e}")
         return pd.DataFrame()  # Retourne un DataFrame vide en cas d'erreur
 
-# Lire et traiter le DAX
-# (l'indice boursier des 30 plus grandes entreprises cotées en bourse en Allemagne)
+# Chargement et traitement des données pour chaque indice boursier
 dax = read_table(url_dax, 3)
 if 'Company' in dax.columns and 'Ticker symbol' in dax.columns:
     dax['NameOfStock'] = dax['Company'] + "_" + dax['Ticker symbol']
-else:
-    print("La table DAX ne contient pas les colonnes attendues.")
 
-# Lire et traiter le Nikkei
-# (l'indice boursier le plus suivi au Japon et comprend 225 grandes entreprises japonaises)
 nikkei = read_table(url_nikkei, 0)
 if 'Company Name' in nikkei.columns and 'Code' in nikkei.columns:
     nikkei['Company Name'] = nikkei['Company Name'].replace(",", "", regex=True)  # Supprimer les virgules
     nikkei['NameOfStock'] = nikkei['Company Name'] + "_" + nikkei['Code'].astype(str) + ".T"
-else:
-    print("La table Nikkei ne contient pas les colonnes attendues.")
 
-# Lire et traiter le S&P 500
-# (l'indice boursier comprenant 500 des plus grandes entreprises cotées en bourse aux États-Unis)
 sp500 = read_table(url_sp500, 0)
 if 'Security' in sp500.columns and 'Symbol' in sp500.columns:
     sp500['NameOfStock'] = sp500['Security'] + "_" + sp500['Symbol']
-else:
-    print("La table S&P 500 ne contient pas les colonnes attendues.")
 
-# Lire et traiter le CAC 40
-# l'indice boursier des 40 plus grandes entreprises cotées en France.
 cac40 = read_table(url_cac40, 3)
 if 'Company' in cac40.columns and 'Ticker' in cac40.columns:
     cac40['NameOfStock'] = cac40['Company'] + "_" + cac40['Ticker']
-else:
-    print("La table CAC 40 ne contient pas les colonnes attendues.")
 
-# Lire et traiter le FTSE 100
-# (l'indice boursier des 100 plus grandes entreprises cotées à la Bourse de Londres).
 ftse100 = read_table(url_ftse100, 3)
 if 'Company' in ftse100.columns and 'EPIC' in ftse100.columns:
     ftse100['NameOfStock'] = ftse100['Company'] + "_" + ftse100["EPIC"]
-else:
-    print("La table FTSE 100 ne contient pas les colonnes attendues.")
-
-# Optionnellement, combiner tous les DataFrames en un seul
-combined_df = pd.concat([dax, nikkei, sp500, cac40, ftse100], ignore_index=True)
-
-# Afficher le DataFrame combiné
-# print(combined_df.head())
-
-# load_data permet de récupérer des données historiques pour des actions spécifiques
-def load_data(symbol, start_date, end_date):
-	stock_data = DataReader(symbol, data_source = "yahoo", start = start_date, end = end_date)
-	return stock_data
-# facilite l'accès aux noms des actions disponibles sur différents indices boursiers. 
-def list_of_stocks(market_name):
-	if market_name == "SP500 (USA)":
-		stocks = sp500['NameOfStock'].to_list()
-	elif market_name == "CAC 40 (France)":
-		stocks = cac40['NameOfStock'].to_list()
-	elif market_name == "FTSE 100 (Angleterre)":
-		stocks = ftse100['NameOfStock'].to_list()
-	elif market_name == "NIKKEI (Japon)":
-		stocks = nikkei['NameOfStock'].to_list()
-	else:
-		stocks = dax['NameofStock'].to_list()
-	return stocks
-
-# Ensemble, elles simplifient le processus d'analyse et de visualisation des données financières.
-
-import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import plotly.express as px
-import plotly.tools as tls
-from pandas_datareader.data import DataReader
-from datetime import date
 
 # Fonction pour charger les données de prix d'une action
+@st.cache_data
 def load_data(symbol, start_date, end_date):
     try:
         stock_data = DataReader(symbol, data_source="yahoo", start=start_date, end=end_date)
         return stock_data
     except Exception as e:
-        st.error(f"Erreur lors du chargement des données : {e}")
+        st.error(f"Erreur lors du chargement des données pour {symbol}: {e}")
         return None
 
 # Fonction pour obtenir la liste des actions d'un marché spécifique
@@ -124,7 +68,7 @@ def list_of_stocks(market_name):
     elif market_name == "NIKKEI (Japon)":
         return nikkei['NameOfStock'].to_list()
     else:
-        return dax['NameofStock'].to_list()
+        return dax['NameOfStock'].to_list()
 
 # Interface utilisateur
 st.title("📈 Analyse des Marchés Boursiers")
@@ -146,8 +90,8 @@ date2 = st.sidebar.date_input("Date de Fin", value=date(2024, 1, 1))
 
 # Choix des moyennes mobiles
 st.sidebar.header("Paramètres des Moyennes Mobiles")
-short = st.sidebar.slider("Moyenne Mobile Courte (jours)", min_value=0, max_value=200, value=20)
-long = st.sidebar.slider("Moyenne Mobile Longue (jours)", min_value=0, max_value=200, value=100)
+short = st.sidebar.slider("Moyenne Mobile Courte (jours)", min_value=1, max_value=200, value=20)
+long = st.sidebar.slider("Moyenne Mobile Longue (jours)", min_value=1, max_value=200, value=100)
 
 # Récupération des données boursières
 df = load_data(symbol=stock.split("_")[1], start_date=date1, end_date=date2)
@@ -180,7 +124,7 @@ if df is not None:
 
     # Tracé des données avec matplotlib
     fig, ax = plt.subplots(figsize=(12, 5))
-    ax.plot(df['Close'].index, df['Close'], label=f'Prix de Clôture', color='blue')
+    ax.plot(df['Close'].index, df['Close'], label='Prix de Clôture', color='blue')
     ax.plot(short_rolling.index, short_rolling, label=f'{short} jours Rolling', color='orange')
     ax.plot(long_rolling.index, long_rolling, label=f'{long} jours Rolling', color='green')
 
@@ -193,6 +137,7 @@ if df is not None:
     ax.set_ylabel('Prix de Clôture ($)')
     ax.set_title(f'Analyse des Moyennes Mobiles pour {stock.split("_")[1]}')
     ax.legend()
+    ax.grid()
 
     # Conversion et affichage avec Plotly
     plotly_fig = tls.mpl_to_plotly(fig)
