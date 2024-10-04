@@ -7,6 +7,7 @@ import numpy as np
 from datetime import date
 import plotly.express as px
 import plotly.tools as tls
+import yfinance as yf
 
 # URLs pour les indices boursiers
 url_sp500 = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"  # USA
@@ -51,7 +52,8 @@ if 'Company' in ftse100.columns and 'EPIC' in ftse100.columns:
 @st.cache_data
 def load_data(symbol, start_date, end_date):
     try:
-        stock_data = DataReader(symbol, data_source="yahoo", start=start_date, end=end_date)
+        # stock_data = DataReader(symbol, data_source="yahoo", start=start_date, end=end_date)
+        stock_data = yf.download(symbol, start=start_date, end=end_date)
         return stock_data
     except Exception as e:
         st.error(f"Erreur lors du chargement des données pour {symbol}: {e}")
@@ -94,7 +96,9 @@ short = st.sidebar.slider("Moyenne Mobile Courte (jours)", min_value=1, max_valu
 long = st.sidebar.slider("Moyenne Mobile Longue (jours)", min_value=1, max_value=200, value=100)
 
 # Récupération des données boursières
-df = load_data(symbol=stock.split("_")[1], start_date=date1, end_date=date2)
+stock_symbol = stock.split("_")[1]
+st.write(f"Chargement des données pour le symbole : {stock_symbol}")
+df = load_data(symbol=stock_symbol, start_date=date1, end_date=date2)
 
 if df is not None:
     # Affichage des données brutes si l'option est cochée
