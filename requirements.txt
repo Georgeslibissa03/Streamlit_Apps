@@ -1,6 +1,6 @@
-streamlit
-pandas
-numpy
-pandas-datareader
-matplotlib
-plotly
+streamlit==1.15.0
+pandas==1.5.3
+pandas_datareader==0.10.0
+numpy==1.23.5
+matplotlib==3.6.2
+plotly==5.10.0
