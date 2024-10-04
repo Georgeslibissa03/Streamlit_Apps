@@ -33,7 +33,7 @@ if 'Company' in dax.columns and 'Ticker symbol' in dax.columns:
 nikkei = read_table(url_nikkei, 0)
 if 'Company Name' in nikkei.columns and 'Code' in nikkei.columns:
     nikkei['Company Name'] = nikkei['Company Name'].replace(",", "", regex=True)  # Supprimer les virgules
-    nikkei['NameOfStock'] = nikkei['Company Name'] + "_" + nikkei['Code'].astype(str) + ".T"
+    nikkei['NameOfStock'] = nikkei['Company Name'] + "_" + nikkei['Code']
 
 sp500 = read_table(url_sp500, 0)
 if 'Security' in sp500.columns and 'Symbol' in sp500.columns:
