@@ -27,26 +27,26 @@ def read_table(url, index):
         return pd.DataFrame()  # Retourne un DataFrame vide en cas d'erreur
 
 # Chargement et traitement des données pour chaque indice boursier
-dax = read_table(url_dax, 3)
-if 'Company' in dax.columns and 'Ticker symbol' in dax.columns:
-    dax['NameOfStock'] = dax['Company'] + "_" + dax['Ticker symbol']
+dax = read_table(url_dax, 4)
+if 'Company' in dax.columns and 'Ticker' in dax.columns:
+    dax['NameOfStock'] = dax['Company'] + "_" + dax['Ticker']
 
 nikkei = read_table(url_nikkei, 0)
-if 'Company Name' in nikkei.columns and 'Code' in nikkei.columns:
-    nikkei['Company Name'] = nikkei['Company Name'].replace(",", "", regex=True)  # Supprimer les virgules
-    nikkei['NameOfStock'] = nikkei['Company Name'] + "_" + nikkei['Code']
+if 'Name' in nikkei.columns and 'Symbol' in nikkei.columns:
+    nikkei['Name'] = nikkei['Name'].replace(",", "", regex=True)  # Supprimer les virgules
+    nikkei['NameOfStock'] = nikkei['Name'] + "_" + str(nikkei['Symbol']) + ".T"
 
 sp500 = read_table(url_sp500, 0)
 if 'Security' in sp500.columns and 'Symbol' in sp500.columns:
     sp500['NameOfStock'] = sp500['Security'] + "_" + sp500['Symbol']
 
-cac40 = read_table(url_cac40, 3)
+cac40 = read_table(url_cac40, 4)
 if 'Company' in cac40.columns and 'Ticker' in cac40.columns:
     cac40['NameOfStock'] = cac40['Company'] + "_" + cac40['Ticker']
 
-ftse100 = read_table(url_ftse100, 3)
-if 'Company' in ftse100.columns and 'EPIC' in ftse100.columns:
-    ftse100['NameOfStock'] = ftse100['Company'] + "_" + ftse100["EPIC"]
+ftse100 = read_table(url_ftse100, 4)
+if 'Company' in ftse100.columns and 'Ticker' in ftse100.columns:
+    ftse100['NameOfStock'] = ftse100['Company'] + "_" + ftse100["Ticker"]
 
 # Fonction pour charger les données de prix d'une action
 @st.cache_data
