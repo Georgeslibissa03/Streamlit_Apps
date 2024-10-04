@@ -13,7 +13,7 @@ import yfinance as yf
 url_sp500 = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"  # USA
 url_cac40 = "https://en.wikipedia.org/wiki/CAC_40"  # Paris
 url_ftse100 = "https://en.wikipedia.org/wiki/FTSE_100_Index"  # Londres
-url_nikkei = "https://topforeignstocks.com/indices/the-components-of-the-nikkei-225-index/"  # Tokyo
+url_nikkei = "https://bullishbears.com/nikkei-225-stocks-list/#:~:text=The%20Bullish%20Bears%20break%20down%20a%20list%20of%20the%20Nikkei"  # Tokyo
 url_dax = "https://en.wikipedia.org/wiki/DAX"  # Berlin
 
 # Fonction pour lire les tables en toute sécurité
