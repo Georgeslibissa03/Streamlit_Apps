@@ -31,7 +31,7 @@ dax = read_table(url_dax, 4)
 if 'Company' in dax.columns and 'Ticker' in dax.columns:
     dax['NameOfStock'] = dax['Company'] + "_" + dax['Ticker']
 
-nikkei = read_table(url_nikkei, 1)
+nikkei = read_table(url_nikkei, 2)
 if 'Name' in nikkei.columns and 'Symbol' in nikkei.columns:
     nikkei['Name'] = nikkei['Name'].replace(",", "", regex=True)  # Supprimer les virgules
     nikkei['NameOfStock'] = nikkei['Name'] + "_" + nikkei['Symbol'] + ".T"
