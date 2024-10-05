@@ -33,8 +33,8 @@ if 'Company' in dax.columns and 'Ticker' in dax.columns:
 
 nikkei = read_table(url_nikkei, 0)
 #if 'Name' in nikkei.columns and 'Symbol' in nikkei.columns:
-    nikkei['Name'] = nikkei['Name'].replace(",", "", regex=True)  # Supprimer les virgules
-    nikkei['NameOfStock'] = nikkei['Name'] + "_" + nikkei['Symbol'] + ".T"
+nikkei['Name'] = nikkei['Name'].replace(",", "", regex=True)  # Supprimer les virgules
+nikkei['NameOfStock'] = nikkei['Name'] + "_" + nikkei['Symbol'] + ".T"
 #else:
     #st.error("Les colonnes attendues 'Name' et 'Symbol' ne sont pas présentes dans les données Nikkei.")
 
