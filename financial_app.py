@@ -35,6 +35,8 @@ nikkei = read_table(url_nikkei, 0)
 if 'Name' in nikkei.columns and 'Symbol' in nikkei.columns:
     nikkei['Name'] = nikkei['Name'].replace(",", "", regex=True)  # Supprimer les virgules
     nikkei['NameOfStock'] = nikkei['Name'] + "_" + nikkei['Symbol'] + ".T"
+else:
+    st.error("Les colonnes attendues 'Name' et 'Symbol' ne sont pas présentes dans les données Nikkei.")
 
 sp500 = read_table(url_sp500, 0)
 if 'Security' in sp500.columns and 'Symbol' in sp500.columns:
