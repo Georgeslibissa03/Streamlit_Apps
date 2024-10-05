@@ -19,9 +19,11 @@ url_dax = "https://en.wikipedia.org/wiki/DAX"  # Berlin
 # Fonction pour lire les tables en toute sécurité
 def read_table(url, index):
     try:
-        df = pd.read_html(url)[index]
-        st.success(f"Table lue avec succès depuis {url}.")
-        return df
+        tables = pd.read_html(url)
+        if index < len(tables):
+            df = tables[index]
+            st.success(f"Table lue avec succès depuis {url}.")
+            return df
     except Exception as e:
         st.error(f"Erreur lors de la lecture de la table à partir de {url} : {e}")
         return pd.DataFrame()  # Retourne un DataFrame vide en cas d'erreur
@@ -35,8 +37,6 @@ nikkei = read_table(url_nikkei, 0)
 if 'Name' in nikkei.columns and 'Symbol' in nikkei.columns:
     nikkei['Name'] = nikkei['Name'].replace(",", "", regex=True)  # Supprimer les virgules
     nikkei['NameOfStock'] = nikkei['Name'] + "_" + nikkei['Symbol'] + ".T"
-else:
-    st.error("Les colonnes attendues 'Name' et 'Symbol' ne sont pas présentes dans les données Nikkei.")
 
 sp500 = read_table(url_sp500, 0)
 if 'Security' in sp500.columns and 'Symbol' in sp500.columns:
